@@ -1,0 +1,9 @@
+@if (auth.currentUser()?.employee; as employee) {
+  <section class="page-heading"><div><p class="eyebrow">MY ACCOUNT</p><h1>My details</h1><p class="muted">Your employee profile.</p></div><div><span class="count-badge">{{ employeeCode(employee.id) }}</span> <button type="button" class="secondary" (click)="refreshDetails()" [disabled]="refreshing">{{ refreshing ? "Refreshing…" : "Refresh details" }}</button></div></section>
+  <section class="panel my-details-card">
+    <div class="panel-heading"><div><p class="eyebrow">EMPLOYEE PROFILE</p><h2>{{ employee.name | employeeName }}</h2></div></div>
+    <dl><div><dt>Username</dt><dd>{{ auth.currentUser()?.username }}</dd></div><div><dt>Email</dt><dd>{{ employee.email }}</dd></div><div><dt>Annual salary</dt><dd>{{ employee.salary === null ? 'Not assigned yet' : (employee.salary | number:'1.2-2') }}</dd></div><div><dt>Department</dt><dd>{{ employee.departmentName || 'Unassigned' }}</dd></div></dl>
+  </section>
+} @else {
+  <p class="alert error" role="alert">No employee profile is available for this account.</p>
+}

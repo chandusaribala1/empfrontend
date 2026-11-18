@@ -1,0 +1,242 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">PEOPLE OPERATIONS</p>
+    <h1>Employees</h1>
+    <p class="muted">Create, update, find and organize employee records.</p>
+  </div>
+  <span class="count-badge">{{ totalElements }} employees</span>
+</section>
+<p class="alert error" role="alert" [hidden]="!error()">{{ error() }}</p>
+<p class="alert success" [hidden]="!notice()">{{ notice() }}</p>
+<app-employee-form
+  [departments]="departments()"
+  [employee]="editingEmployee()"
+  [busy]="busy()"
+  (saveRequested)="save($event)"
+  (cancelRequested)="cancelEdit()"
+></app-employee-form>
+<section class="panel search-panel">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">DIRECTORY</p>
+      <h2>Find employees</h2>
+    </div>
+    <button class="text-button" type="button" (click)="clearSearch()">
+      Clear filters
+    </button>
+  </div>
+  <p class="alert error" role="alert" [hidden]="!searchError">
+    {{ searchError }}
+  </p>
+  <div class="search-grid">
+    <label
+      >By name<input
+        [(ngModel)]="searchName"
+        placeholder="Name keyword"
+        (keyup.enter)="searchEmployees()"
+    /></label>
+    <label
+      >By department<select [(ngModel)]="searchDepartment">
+        <option value="">All departments</option>
+        @for (department of departments(); track department.id) {
+          <option [value]="department.id">{{ department.name }}</option>
+        }
+      </select></label
+    >
+    <label
+      >Salary above<input
+        [(ngModel)]="searchSalary"
+        type="number"
+        min="0.01"
+        placeholder="Amount"
+        (keyup.enter)="searchEmployees()"
+    /></label>
+    <label
+      >Salary range
+      <div class="range-inputs">
+        <input
+          aria-label="Minimum salary"
+          [(ngModel)]="rangeMin"
+          type="number"
+          placeholder="Min"
+        /><input
+          aria-label="Maximum salary"
+          [(ngModel)]="rangeMax"
+          type="number"
+          placeholder="Max"
+        /></div
+    ></label>
+    <button
+      class="secondary search-button"
+      type="button"
+      (click)="searchEmployees()"
+    >
+      Search
+    </button>
+  </div>
+</section>
+<section class="directory-layout">
+  <div class="panel table-panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">{{ "EMPLOYEE DIRECTORY" | uppercase }}</p>
+        <h2>All employees</h2>
+      </div>
+      <label class="size-picker"
+        >Rows
+        <select [(ngModel)]="size" (ngModelChange)="changeSize()">
+          <option [ngValue]="5">5</option>
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="25">25</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+        </select></label
+      >
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th
+              [attr.aria-sort]="
+                sortBy === 'id'
+                  ? direction === 'asc'
+                    ? 'ascending'
+                    : 'descending'
+                  : 'none'
+              "
+            >
+              <button
+                class="sort-button"
+                type="button"
+                [disabled]="busy()"
+                (click)="changeSort('id')"
+              >
+                Employee ID {{ sortIndicator("id") }}
+              </button>
+            </th>
+            <th
+              [attr.aria-sort]="
+                sortBy === 'name'
+                  ? direction === 'asc'
+                    ? 'ascending'
+                    : 'descending'
+                  : 'none'
+              "
+            >
+              <button
+                class="sort-button"
+                type="button"
+                [disabled]="busy()"
+                (click)="changeSort('name')"
+              >
+                Employee {{ sortIndicator("name") }}
+              </button>
+            </th>
+            <th
+              [attr.aria-sort]="
+                sortBy === 'email'
+                  ? direction === 'asc'
+                    ? 'ascending'
+                    : 'descending'
+                  : 'none'
+              "
+            >
+              <button
+                class="sort-button"
+                type="button"
+                [disabled]="busy()"
+                (click)="changeSort('email')"
+              >
+                Email {{ sortIndicator("email") }}
+              </button>
+            </th>
+            <th
+              [attr.aria-sort]="
+                sortBy === 'salary'
+                  ? direction === 'asc'
+                    ? 'ascending'
+                    : 'descending'
+                  : 'none'
+              "
+            >
+              <button
+                class="sort-button"
+                type="button"
+                [disabled]="busy()"
+                (click)="changeSort('salary')"
+              >
+                Salary {{ sortIndicator("salary") }}
+              </button>
+            </th>
+            <th>Department</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (employee of employees(); track employee.id) {
+            <tr
+              [class.selected-row]="selected()?.id === employee.id"
+              (click)="choose(employee)"
+            >
+              <td>{{ employeeCode(employee.id) }}</td>
+              <td class="person-cell">{{ employee.name | employeeName }}</td>
+              <td [attr.title]="employee.email | lowercase">
+                {{ employee.email }}
+              </td>
+              <td [attr.title]="employee.salary === null ? 'Not assigned' : (employee.salary | currency)">
+                {{ employee.salary === null ? "Not assigned" : (employee.salary | number: "1.2-2") }}
+              </td>
+              <td>{{ employee.departmentName || "Unassigned" }}</td>
+              <td class="actions">
+                <button
+                  class="inline-action"
+                  type="button"
+                  (click)="$event.stopPropagation(); edit(employee)"
+                >
+                  Edit</button
+                ><button
+                  class="inline-action danger-text"
+                  type="button"
+                  (click)="$event.stopPropagation(); remove(employee)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-state">
+                {{ busy() ? "Loading employees…" : "No employees found." }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <span>Showing {{ employees().length }} of {{ totalElements }} employees · Page {{ totalPages ? page + 1 : 0 }} of {{ totalPages }}</span>
+      <div>
+        <button
+          class="secondary"
+          type="button"
+          [disabled]="page === 0 || totalPages === 0"
+          (click)="changePage(-1)"
+        >
+          Previous</button
+        ><button
+          class="secondary"
+          type="button"
+          [disabled]="page + 1 >= totalPages"
+          (click)="changePage(1)"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+  <app-employee-details
+    [employee]="selected()"
+    (editRequested)="edit($event)"
+  ></app-employee-details>
+</section>

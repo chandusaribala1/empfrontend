@@ -1,0 +1,18 @@
+<main class="auth-page">
+  <section class="auth-card register-card">
+    <a class="brand auth-brand" routerLink="/login"><span class="brand-mark">E</span><span>Simplify<span class="brand-light">3x</span></span></a>
+    <p class="eyebrow">EMPLOYEE ACCOUNT</p>
+    <h1>Create your account</h1>
+    <p class="muted">Create your employee profile and login. An admin will assign your department and salary.</p>
+    @if (error) { <p class="alert error" role="alert">{{ error }}</p> }
+    @if (notice) { <p class="alert success">{{ notice }}</p> }
+    <form class="auth-form" (ngSubmit)="register()">
+      <label>Username<input name="username" [(ngModel)]="username" autocomplete="username" minlength="3" maxlength="50" pattern="[A-Za-z0-9._-]+" required></label>
+      <label>Full name<input name="name" [(ngModel)]="name" autocomplete="name" maxlength="120" required></label>
+      <label>Email address<input name="email" [(ngModel)]="email" type="email" autocomplete="email" placeholder="example@gmail.com" required></label>
+      <label>Password<input name="password" [(ngModel)]="password" type="password" autocomplete="new-password" minlength="8" maxlength="100" required></label>
+      <button type="submit" [disabled]="busy">{{ busy ? 'Creating account…' : 'Create employee account' }}</button>
+    </form>
+    <p class="auth-link">Already registered? <a routerLink="/login">Sign in</a></p>
+  </section>
+</main>

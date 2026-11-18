@@ -1,0 +1,36 @@
+<div class="panel department-detail">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">DEPARTMENT DETAILS</p>
+      <h2 [attr.title]="department?.name | titlecase">
+        {{ department?.name || "Select a department" }}
+      </h2>
+    </div>
+  </div>
+  @if (department) {
+    <h3 class="section-label">Department employees</h3>
+    <div class="employee-list">
+      @for (employee of employees; track employee.id) {
+        <div class="employee-item">
+          <span class="avatar">{{
+            employee.name.slice(0, 1).toUpperCase()
+          }}</span>
+          <div>
+            <strong
+              >{{ employeeCode(employee.id) }} · {{ employee.name }}</strong
+            ><small
+              >{{ employee.departmentName || "Unassigned" }} ·
+              {{ employee.email }}</small
+            >
+          </div>
+        </div>
+      } @empty {
+        <p class="empty-state">No employees in this department yet.</p>
+      }
+    </div>
+  } @else {
+    <p class="empty-state">
+      Choose a department from the list to view its employees.
+    </p>
+  }
+</div>

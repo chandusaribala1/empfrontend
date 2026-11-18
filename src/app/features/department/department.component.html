@@ -1,0 +1,107 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">ORGANIZATION</p>
+    <h1>Departments</h1>
+    <p class="muted">Manage departments and view their employees.</p>
+  </div>
+  <span class="count-badge">{{ departments().length }} departments</span>
+</section>
+<p class="alert error" role="alert" [hidden]="!error()">{{ error() }}</p>
+<p class="alert success" [hidden]="!notice()">{{ notice() }}</p>
+<section class="department-layout">
+  <div class="panel">
+    <app-department-form
+      [name]="name()"
+      (nameChange)="name.set($event)"
+      (createRequested)="create()"
+    >
+
+    </app-department-form>
+    <div class="panel-heading list-heading">
+      <div>
+        <p class="eyebrow">{{ "ORGANIZATION" | uppercase }}</p>
+        <h2>Department list</h2>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Employees</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (department of departments(); track department.id) {
+            <tr [class.selected-row]="selected()?.id === department.id">
+              <td class="person-cell">
+                @if (editingDepartmentId === department.id) {
+                  <input
+                    class="department-edit-input"
+                    [name]="'department-' + department.id"
+                    [(ngModel)]="editDepartmentName"
+                    maxlength="100"
+                    required
+                    (keyup.enter)="saveEdit(department)"
+                    (keyup.escape)="cancelEdit()"
+                  />
+                } @else {
+                  {{ department.name }}
+                }
+              </td>
+              <td>{{ department.employees.length }}</td>
+              <td class="department-actions">
+                @if (editingDepartmentId === department.id) {
+                  <button
+                    class="inline-action"
+                    type="button"
+                    (click)="saveEdit(department)"
+                  >
+                    Save</button
+                  ><button
+                    class="inline-action"
+                    type="button"
+                    (click)="cancelEdit()"
+                  >
+                    Cancel
+                  </button>
+                } @else {
+                  <button
+                    class="inline-action"
+                    type="button"
+                    (click)="view(department)"
+                  >
+                    View</button
+                  ><button
+                    class="inline-action"
+                    type="button"
+                    (click)="edit(department)"
+                  >
+                    Edit</button
+                  ><button
+                    class="inline-action danger-text"
+                    type="button"
+                    (click)="remove(department)"
+                  >
+                    Delete
+                  </button>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="3" class="empty-state">
+                No departments have been created.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <app-department-details
+    [department]="selected()"
+    [employees]="employeesForSelected()"
+  ></app-department-details>
+</section>

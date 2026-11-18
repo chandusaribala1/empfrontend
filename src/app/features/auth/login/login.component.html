@@ -1,0 +1,16 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <a class="brand auth-brand" routerLink="/login"><span class="brand-mark">E</span><span>Simplify<span class="brand-light">3x</span></span></a>
+    <p class="eyebrow">EMPLOYEE MANAGEMENT</p>
+    <h1>Welcome back</h1>
+    <p class="muted">Sign in to continue to your workspace.</p>
+    @if (notice) { <p class="alert success">{{ notice }}</p> }
+    @if (error) { <p class="alert error" role="alert">{{ error }}</p> }
+    <form class="auth-form" (ngSubmit)="login()">
+      <label>Username<input name="username" [(ngModel)]="username" autocomplete="username" required autofocus></label>
+      <label>Password<input name="password" [(ngModel)]="password" type="password" autocomplete="current-password" required></label>
+      <button type="submit" [disabled]="busy">{{ busy ? 'Signing in…' : 'Sign in' }}</button>
+    </form>
+    <p class="auth-link">New employee? <a routerLink="/register">Create an employee account</a></p>
+  </section>
+</main>

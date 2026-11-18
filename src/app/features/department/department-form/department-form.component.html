@@ -1,0 +1,17 @@
+<div class="panel-heading">
+  <div>
+    <p class="eyebrow">NEW DEPARTMENT</p>
+    <h2>Create department</h2>
+  </div>
+</div>
+<form class="create-department" (ngSubmit)="create()">
+  <label
+    >Department name<input
+      name="departmentName"
+      [ngModel]="name"
+      (ngModelChange)="updateName($event)"
+      required
+      maxlength="100"
+      placeholder="e.g. Engineering" /></label
+  ><button type="submit">Create department</button>
+</form>

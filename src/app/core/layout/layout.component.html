@@ -1,0 +1,25 @@
+g<div class="app-layout">
+  <aside class="sidebar">
+    <a class="brand sidebar-brand" [routerLink]="auth.currentUser()?.role === 'ADMIN' ? '/employees' : '/my-details'"><span class="brand-mark">E</span><span>Simplify<span class="brand-light">3x</span></span></a>
+    <p class="sidebar-label">WORKSPACE</p>
+    <nav class="side-nav" aria-label="Main navigation">
+      @if (auth.currentUser()?.role === 'ADMIN') {
+        <a class="side-link" routerLink="/employees" routerLinkActive="active">Employees</a>
+        <a class="side-link" routerLink="/departments" routerLinkActive="active">Departments</a>
+      } @else {
+        <a class="side-link" routerLink="/my-details" routerLinkActive="active">My details</a>
+      }
+    </nav>
+    <div class="sidebar-account">
+      <div class="account-name">{{ auth.currentUser()?.username }}</div>
+      <div class="account-role">{{ auth.currentUser()?.role | lowercase }}</div>
+      <button class="secondary sign-out" type="button" (click)="logout()">Sign out</button>
+    </div>
+  </aside>
+
+  <div class="app-main">
+    <header class="topbar"><div class="topbar-caption">EMPLOYEE MANAGEMENT</div><span class="topbar-dot"></span></header>
+    <main class="shell"><router-outlet></router-outlet></main>
+    <footer [attr.title]="'Today: ' + (today | date:'mediumDate')">Employee &amp; Department Management <span>•</span> Internal directory</footer>
+  </div>
+</div>
